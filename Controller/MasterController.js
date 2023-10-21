@@ -19,56 +19,76 @@ exports.signupDetails = async function (req, res) {
     }
 }
 
-exports.getalldetails = async function (req, res) {
+exports.login = async function (req, res) {
     try {
-        db.beginTransaction()
-        var details = mastermodel.getalldetails(req.body, req.params.id)
-        if (details.length > 0) {
-            db.commit()
-            res.status(200).json({ message: "success", Data: details })
-        }
-        else {
-            db.rollback()
-            res.status(404).json({ message: "Error in getting task details" })
-        }
-    } catch (error) {
-        db.rollback()
-        res.status(500).json({ message: "rollback error" })
-    }
-}
+        db.beginTransaction();
+        var loginData = await mastermodel.login(req.body)
 
-exports.updateDetails = async function (req, res) {
-    try {
-        db.beginTransaction()
-        const id = req.params.id
-        var update = await mastermodel.updateDetails(req.body, id)
-        if (update.affectedRows) {
-            db.commit()
-            res.status(200).json({ message: "detail has been updated", Data: req.body })
+        if (loginData!=undefined) {
+            var generateToken = mastermodel.sessionToken(loginData);
+            console.log(generateToken, "dfghjkl");
+            db.commit();
+            res.json({message: "User Login Successfull", UserData : loginData})
         } else {
-            db.rollback()
-            res.status(404).json({ message: "Error in updating details" })
+            db.rollback();
+            res.status(401).json({error: "Data Error"})
         }
     } catch (error) {
-        db.rollback()
-        res.status(500).json({ message: "rollback error" })
+        db.rollback();
+        res.status(401).json({error: "Data Error"})
     }
 }
 
-exports.removeuser = async function (req, res) {
-    try {
-        db.beginTransaction()
+// exports.getalldetails = async function (req, res) {
+//     try {
+//         db.beginTransaction()
+//         var details = mastermodel.getalldetails(req.body, req.params.id)
+//         if (details.length > 0) {
+//             db.commit()
+//             res.status(200).json({ message: "success", Data: details })
+//         }
+//         else {
+//             db.rollback()
+//             res.status(404).json({ message: "Error in getting task details" })
+//         }
+//     } catch (error) {
+//         db.rollback()
+//         res.status(500).json({ message: "rollback error" })
+//     }
+// }
 
-        var inactive = await mastermodel.removeuser(req.params.id)
-        if (inactive.affectedRows) {
-            db.commit()
-            res.status(200).json({ message: "user is inactive" })
-        } else {
-            db.rollback()
-            res.status(404).json({ message: "Error is getting task details" })
-        }
-    } catch (error) {
-        db.rollback()
-        res.status(500).json({ message: "rollback error" })
-    }
-}
+// exports.updateDetails = async function (req, res) {
+//     try {
+//         db.beginTransaction()
+//         const id = req.params.id
+//         var update = await mastermodel.updateDetails(req.body, id)
+//         if (update.affectedRows) {
+//             db.commit()
+//             res.status(200).json({ message: "detail has been updated", Data: req.body })
+//         } else {
+//             db.rollback()
+//             res.status(404).json({ message: "Error in updating details" })
+//         }
+//     } catch (error) {
+//         db.rollback()
+//         res.status(500).json({ message: "rollback error" })
+//     }
+// }
+
+// exports.removeuser = async function (req, res) {
+//     try {
+//         db.beginTransaction()
+
+//         var inactive = await mastermodel.removeuser(req.params.id)
+//         if (inactive.affectedRows) {
+//             db.commit()
+//             res.status(200).json({ message: "user is inactive" })
+//         } else {
+//             db.rollback()
+//             res.status(404).json({ message: "Error is getting task details" })
+//         }
+//     } catch (error) {
+//         db.rollback()
+//         res.status(500).json({ message: "rollback error" })
+//     }
+// }

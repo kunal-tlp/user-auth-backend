@@ -5,11 +5,13 @@ const masterController = require('../Controller/MasterController')
 
 router.post('/signupDetails', masterController.signupDetails)
 
-router.get('/getalldetails/:id', masterController.getalldetails)
+router.post('/login', masterController.login);
 
-router.post('/updateDetails/:id', masterController.updateDetails)
+// router.get('/getalldetails/:id', masterController.getalldetails)
 
-router.post("/removeuser/:id", masterController.removeuser)
+// router.post('/updateDetails/:id', masterController.updateDetails)
+
+// router.post("/removeuser/:id", masterController.removeuser)
 
 
 
